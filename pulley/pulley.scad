@@ -9,9 +9,9 @@ bearing_height = 5;
 bearing_holder_diameter = 12;
 
 /* [Pulley] */
-pulley_height = 10;
+pulley_height = 12;
 pulley_diameter = 20.5+0.5;
-pulley_guide_width = 0.75;
+pulley_guide_width = 1;
 tooth = true;
 
 module GT2_tooth(h) {

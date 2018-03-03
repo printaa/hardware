@@ -1,5 +1,5 @@
 $fn=32;
-use <../library.scad>;
+use <./library.scad>;
 
 // options
 with_linear_bearings = true;
