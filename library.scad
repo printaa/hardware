@@ -58,24 +58,33 @@ module GT2_tooth(h) {
   linear_extrude(height=h) polygon([[0.747183,-0.5],[0.747183,0],[0.647876,0.037218],[0.598311,0.130528],[0.578556,0.238423],[0.547158,0.343077],[0.504649,0.443762],[0.451556,0.53975],[0.358229,0.636924],[0.2484,0.707276],[0.127259,0.750044],[0,0.76447],[-0.127259,0.750044],[-0.2484,0.707276],[-0.358229,0.636924],[-0.451556,0.53975],[-0.504797,0.443762],[-0.547291,0.343077],[-0.578605,0.238423],[-0.598311,0.130528],[-0.648009,0.037218],[-0.747183,0],[-0.747183,-0.5]]);
 }
 
-module nema17(height, screw_mask_height=0, screw_mask_slot_length=0, center_mask_height=2.5) {
+module stepper_motor(
+  height=40,
+  width=43.18,
+  chamfer=4,
+  screw_distance=31,
+  pilot_diameter=22,
+  pilot_height=2.5,
+  screw_mask_height=0,
+  screw_mask_slot_length=0
+) {
   difference() {
     translate([0,0,-height/2]) hull() {
-      cube([42.3, 31, height], center=true);
-      cube([31, 42.3, height], center=true);
+      cube([width, width-chamfer*2, height], center=true);
+      cube([width-chamfer*2, width, height], center=true);
     }
-    translate([31/2,31/2,-4.5]) cylinder(h=9,d=3);
-    translate([31/2,-31/2,-4.5]) cylinder(h=9,d=3);
-    translate([-31/2,31/2,-4.5]) cylinder(h=9,d=3);
-    translate([-31/2,-31/2,-4.5]) cylinder(h=9,d=3);
+    translate([screw_distance/2,screw_distance/2,-4.5]) cylinder(h=9,d=3);
+    translate([screw_distance/2,-screw_distance/2,-4.5]) cylinder(h=9,d=3);
+    translate([-screw_distance/2,screw_distance/2,-4.5]) cylinder(h=9,d=3);
+    translate([-screw_distance/2,-screw_distance/2,-4.5]) cylinder(h=9,d=3);
   }
-  cylinder(h=center_mask_height, d=22+2);
+  cylinder(h=pilot_height, d=pilot_diameter);
   cylinder(h=27, d=5+2);
     
-  screw_slot( 31/2, 31/2);
-  screw_slot( 31/2,-31/2);
-  screw_slot(-31/2, 31/2);
-  screw_slot(-31/2,-31/2);
+  screw_slot( screw_distance/2, screw_distance/2);
+  screw_slot( screw_distance/2,-screw_distance/2);
+  screw_slot(-screw_distance/2, screw_distance/2);
+  screw_slot(-screw_distance/2,-screw_distance/2);
   
   module screw_slot(x, y) { hull() {
     dx = x > 0 ? screw_mask_slot_length/2 : -screw_mask_slot_length/2;

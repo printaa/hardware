@@ -1,67 +1,45 @@
+use <./library.scad>;
+
 $fn = 32;
-
-module nema17(height, screw_mask_height) {
-    difference() {
-        translate([0,0,-height/2]) {
-            hull() {
-                cube([42.3, 31, height], center=true);
-                cube([31, 42.3, height], center=true);
-            }
-        }
-        translate([31/2,31/2,-4.5]) cylinder(h=9,d=3);
-        translate([31/2,-31/2,-4.5]) cylinder(h=9,d=3);
-        translate([-31/2,31/2,-4.5]) cylinder(h=9,d=3);
-        translate([-31/2,-31/2,-4.5]) cylinder(h=9,d=3);
-    }
-    cylinder(h=2+0.5, d=22+1);
-    cylinder(h=27, d=5+2);
-    
-    if(screw_mask_height>0) {
-        translate([31/2,31/2,0]) cylinder(h=screw_mask_height,d=3);
-        translate([31/2,-31/2,0]) cylinder(h=screw_mask_height,d=3);
-        translate([-31/2,31/2,0]) cylinder(h=screw_mask_height,d=3);
-        translate([-31/2,-31/2,0]) cylinder(h=screw_mask_height,d=3);
-    }
-}
-
-w=42.3;
-difference() {
-    cube([w,w+5,5]);
-    translate([w/2, w/2, -0.05]) nema17(height=60, screw_mask_height=10);
-}
+stepper_width=42.3;
 
 difference() {
-  translate([-10, 20+5/2, 1]) cube([20,5,42],center=true);
-  translate([-10,30,-12.5]) rotate([90,0,0]) cylinder(d=5.5, h=20);
-  translate([-10,30,12.5]) rotate([90,0,0]) cylinder(d=5.5, h=20);
+  translate([stepper_width/2-20, 0, 0]) cube([stepper_width,stepper_width,5], center=true);
+  translate([stepper_width/2-20, 0, -2.5]) rotate([0,0,0]) stepper_motor(
+    height=60,
+    width=stepper_width,
+    chamfer=4,
+    screw_distance=31,
+    pilot_diameter=22+2,
+    pilot_height=10,
+    screw_mask_height=10,
+    screw_mask_slot_length=2
+  );
 }
 
-translate([-5/2, 3*w/4+2.5, 1]) cube([5,w/2+5,42],center=true);
+translate([0,stepper_width/2,0]) mount();
 
-difference() {
-  union() {
-    difference() {
-      translate([5/2, w/2+2.5, 11]) cube([5,w+5,22],center=true);
-      translate([-10,10,12.5]) rotate([90,0,90]) cylinder(d=5.5, h=20);
-    }
-
-    translate([5,5,5])
-    rotate([90,0,0])
-    linear_extrude(height = 5)
-    polygon(points = [[0, 0], [0, 17], [w-5, 0]]);
-
-    translate([0,w+5,0])
-    rotate([90,0,0])
-    linear_extrude(height = 5)
-    polygon(points = [[0, 0], [0, -20], [w, 0]]);
+module mount () {
+  translate([10,0,-2.5]) cube([stepper_width-30,3,5]);
+  translate([0,-2,0]) cube([10,2,15]);
+  difference() {
+    translate([0,0,-15]) cube([10,20,30]);
+    translate([5,10,-15/2]) rotate([0, -90, 0]) screw(d=5, l=20);
+    translate([5,10,15/2]) rotate([0, -90, 0]) screw(d=5, l=20);
   }
-  translate([w/2+31/2,w/2+31/2,0]) cylinder(h=14,d=6);
-  translate([w/2+31/2,w/2-31/2,0]) cylinder(h=14,d=6);
-  translate([w/2-31/2,w/2+31/2,0]) cylinder(h=14,d=6);
-  translate([w/2-31/2,w/2-31/2,0]) cylinder(h=14,d=6);
-  
-  translate([w/2+31/2,w/2+31/2,0]) cylinder(h=100,d=3);
-  translate([w/2+31/2,w/2-31/2,0]) cylinder(h=100,d=3);
-  translate([w/2-31/2,w/2+31/2,0]) cylinder(h=100,d=3);
-  translate([w/2-31/2,w/2-31/2,0]) cylinder(h=100,d=3);
+  translate([0,3,0]) rotate([90,0,0]) linear_extrude(height=5) polygon(points=[
+    [10, 2.5],
+    [10, 15],
+    [stepper_width-20, 2.5]
+  ]);
+  translate([0,3,0]) rotate([90,0,0]) linear_extrude(height=3) polygon(points=[
+    [10, -2.5],
+    [10, -15],
+    [stepper_width-20, -2.5]
+  ]);
+  rotate([90,0,0]) linear_extrude(height = 2) polygon(points = [
+    [0, 2.5],
+    [0, 15],
+    [-20, 2.5]
+  ]);
 }
