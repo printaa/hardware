@@ -1,15 +1,19 @@
+/* [Render] */
+// resolution
 $fn=128;
-
 // render spacer or washer for pulley holder
 mode = "spacer"; // [spacer:spacer for y carriage, washer_outer:outer washer for pulley holder, washer_middle:middle washer for pulley holder]
-// height of the linear bearing
-bearing_height = 5;
-// height of the pulley
-pulley_height = 12;
+/* [Size] */
 // space between upper and lower x carriage
 total_height = 30;
 // height of the spacer plane
 h_plane = 1.5;
+/* [Pulley] */
+// height of the linear bearing
+bearing_height = 5;
+// height of the pulley
+pulley_height = 12;
+
 
 inner_height = total_height - 2*h_plane;
 space_between_pulleys = (inner_height-2*pulley_height)/3;
