@@ -30,6 +30,10 @@ difference() {
   
   //x-axis shafts
   translate([22.5,0,0]) rotate([0,90,0]) cylinder(d=8+0.25, h=40);
+  translate([(25+screw_x)/2,0,-10]) {
+    rotate([-90,0,0]) m3_mounting_hole(use_insert_nuts=true);
+    screw(d=3, l=10, head=false);
+  }
   
   //pulley holding screws
   translate([screw_x, 11,-10+5]) screw(d=5, l=40, separation=screw_separation);;
