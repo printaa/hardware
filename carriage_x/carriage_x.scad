@@ -1,13 +1,14 @@
 $fn=32;
 use <../library.scad>;
-
 use_insert_nuts = true;
+layer_height=0.2;
 
 difference() {
   union() {
     // main cube
-    translate([0,0,-10/2]) cube([60,75,10], center=true);
+    translate([0,0,0]) cube([60,75,20], center=true);
   }
+  translate([0,0,10]) cube([60.1,75.1,20], center=true);
     
   // shafts + linear bearings
   _bearing_x_offset = (24+1)/2+2.5;
@@ -22,23 +23,40 @@ difference() {
   translate([0,25,0]) rotate([0,90,0]) lm8uu();
   translate([0,25,0]) rotate([0,90,0]) lm8uu_zip_tie(width=zip_tie_width, thickness=zip_tie_thickness);
   
-  translate([ 12.5, 12.5, -5]) rotate([0,0,0]) screw(d=5, l=40);
-  translate([ 12.5,-12.5, -5]) rotate([0,0,0]) screw(d=5, l=40);
-  translate([-12.5, 12.5, -5]) rotate([0,0,0]) screw(d=5, l=40);
-  translate([-12.5,-12.5, -5]) rotate([0,0,0]) screw(d=5, l=40);
+  translate([ 12.5, 12.5, 5]) rotate([180,0,0]) screw(d=5, l=40, separation=layer_height*2);
+  translate([ 12.5,-12.5, 5]) rotate([180,0,0]) screw(d=5, l=40, separation=layer_height*2);
+  translate([-12.5, 12.5, 5]) rotate([180,0,0]) screw(d=5, l=40, separation=layer_height*2);
+  translate([-12.5,-12.5, 5]) rotate([180,0,0]) screw(d=5, l=40, separation=layer_height*2);
 
-  translate([ 60/2-5, 0,-5]) belt_holders_slot();
-  translate([-60/2+5, 0,-5]) rotate([0,180,0]) belt_holders_slot();
+  belt_slots();
+  
+  blower_fan_mounting_holes();
 }
 
-module belt_holders_slot () {
-  cube([10,21,10], center=true);
-  translate([-5, 5.5,0]) union() {
-    rotate([0,0,-90]) m3_mounting_hole(use_insert_nuts);
-    rotate([0,-90,0]) screw(d=3, l=20, head=false);
+module blower_fan_mounting_holes () {
+  translate([25, 39,0]) union() {
+    //#translate([0,0,25]) rotate([0,0,180]) import("5015_blower_fan_thingiverse-1576438.stl");
+    translate([-4.25,-44.75,10.1]) rotate([90,0,0]) m3_mounting_hole(use_insert_nuts);
+    translate([-46.88,-7.08,10.1]) rotate([90,0,0]) m3_mounting_hole(use_insert_nuts);
   }
-  translate([-5,-5.5,0]) union() {
-    rotate([0,0,-90]) m3_mounting_hole(use_insert_nuts);
-    rotate([0,-90,0]) screw(d=3, l=20, head=false);
+}
+
+module belt_slots () {
+  distance=13.015;
+  translate([0,distance/2,0]) cube([100,7,2.5], center=true);
+  translate([0,-distance/2,0]) cube([100,7,2.5], center=true);
+  
+  module side_slot (w) {
+    translate([0,0,-10/2]) cube([w,7,10], center=true);
+    difference() {
+      r=5;
+      translate([0,0,-r]) cube([w+2*r,7,r*2], center=true);
+      translate([-w/2-r,0,-r]) rotate([90,0,0]) cylinder(r=r, h=7, center=true);
+      translate([w/2+r,0,-r]) rotate([90,0,0]) cylinder(r=r, h=7, center=true);
+    }
   }
+  
+  translate([-60/2+10, distance/2,-2.5/2]) side_slot(3.25);
+  translate([-60/2+10,-distance/2,-2.5/2]) side_slot(3.25);
+  
 }
